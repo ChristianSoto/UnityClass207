@@ -7,9 +7,9 @@ public class MyWindow : EditorWindow
     [MenuItem("Custom/RigidObject/Set Mass")]
     public static void SetMass()
     {
-		if (Selection.activeTransform != null)
+		foreach (Transform transform in Selection.transforms)
 		{
-			GameObject gObject = Selection.activeTransform.gameObject;
+			GameObject gObject = transform.gameObject;
 			if (gObject.rigidbody == null)
 			{
 				gObject.AddComponent<Rigidbody>();
@@ -17,8 +17,7 @@ public class MyWindow : EditorWindow
 						
 			Vector3 size = gObject.renderer.bounds.size;			
 			gObject.rigidbody.mass = size.magnitude;
+			
 		}
-		
-		
     }
 }
