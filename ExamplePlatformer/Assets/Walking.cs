@@ -30,11 +30,11 @@ public class Walking : MonoBehaviour {
 	
 	void OnControllerColliderHit(ControllerColliderHit hit) {
 	   direction = !direction;
-		Debug.Log ("Changing Direction");
+		//Debug.Log ("Changing Direction");
 		
 		if (hit.gameObject.tag  == "Player")
 		{
-			Debug.Log ("You were hit");
+			//Debug.Log ("You were hit");
 		}
 	}
 }
