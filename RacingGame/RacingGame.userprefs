@@ -1,6 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\CarController.cs">
+    <Files>
+      <File FileName="Assets\CarController.cs" Line="6" Column="34" />
+      <File FileName="Assets\SmoothCameraWithBump.cs" Line="8" Column="5" />
+      <File FileName="Assets\FollowWithBump.cs" Line="46" Column="53" />
+      <File FileName="Assets\Stockcar\SmoothFollow.js" Line="50" Column="42" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
