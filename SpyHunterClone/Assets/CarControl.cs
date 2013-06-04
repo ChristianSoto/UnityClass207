@@ -14,32 +14,65 @@ public class CarControl : MonoBehaviour {
 	public bool CapWheels;
 	public float Speed;
 	public float MaxSpeed;
-	public float PressureMod = 1;
+	public bool Boost = false;
+	public float Acceleration;
+	public float Turn;
+	public Light LeftBooster;
+	public Light RightBooster;
+	public Vector3 StartPosition = new Vector3(295f,100.5f,273f);
+	public Transform LookAtVector;
+	public ParticleSystem LeftFlame;
+	public ParticleSystem LeftSmoke;
+	public ParticleSystem RightFlame;
+	public ParticleSystem RightSmoke;
 	
 	void OnStart()
 	{		
-		car.rigidbody.centerOfMass = new Vector3(0f, -1f, 0f);
+		//car.rigidbody.centerOfMass = new Vector3(0f, -1f, 0f);
 	}
- 
-	void FixedUpdate () {
-		
-	Speed = car.rigidbody.velocity.sqrMagnitude;	
-	car.rigidbody.AddForce (0, -Speed * PressureMod, 0);
-		
-	rearWheel1.motorTorque = Input.GetAxis ("Vertical") * torque;
-	rearWheel2.motorTorque = Input.GetAxis ("Vertical") * torque;
-	frontWheel1.steerAngle = Input.GetAxis ("Horizontal") * 10;
-	frontWheel2.steerAngle = Input.GetAxis ("Horizontal") * 10;
 	
-	if (Speed > MaxSpeed)
+	void Update()
+	{		
+		Acceleration = Input.GetAxis ("Vertical");
+		Turn = Input.GetAxis ("Horizontal");
+		Speed = car.rigidbody.velocity.sqrMagnitude;	
+		
+		if (Input.GetButton ("Jump"))
+		{
+			Acceleration = 1;			
+			LeftBooster.enabled = true;
+			RightBooster.enabled = true;
+			LeftFlame.Emit (1);			
+			RightFlame.Emit (1);	
+			LeftSmoke.Emit (1);
+			RightSmoke.Emit (1);
+			Boost = true;			
+		}
+		else
+		{
+			LeftBooster.enabled = false;
+			RightBooster.enabled = false;			
+			torque = 200;
+			Boost = false;
+		}
+		
+		if (Speed > MaxSpeed )
 		{
 			torque = 0;	
-		}
-	else
-		{
-			torque = 100;
-		}
+		}	
+	}
 		
+ 
+	void FixedUpdate () {	
+			
+	rearWheel1.motorTorque = Acceleration * torque;
+	rearWheel2.motorTorque = Acceleration * torque;			
+	frontWheel1.steerAngle = Turn * 20;
+	frontWheel2.steerAngle = Turn * 20;
+	if (Boost)
+		{
+			car.transform.rigidbody.AddForce (-car.transform.forward * 12, ForceMode.Acceleration);
+		}
 	
 	if (Stuck())
 		{
@@ -52,12 +85,13 @@ public class CarControl : MonoBehaviour {
 		
 	
 		
-	if (stuckCount > 200)
-		{			
+	if (stuckCount > 150)
+		{						
+			car.position = StartPosition;	
+			car.rotation = new Quaternion(0.0f,1.0f,0.0f,0.0f);
+			car.LookAt (LookAtVector);
+			car.Rotate(new Vector3(0f,180f,0f));
 			
-//			car.rotation.x = 0;
-//			car.rotation.y = 180;
-			car.position = new Vector3(295f,100.5f,273f);
 		}				
 	}			
 			
@@ -80,6 +114,6 @@ public class CarControl : MonoBehaviour {
 	private float Round(float f)
 		{
 			return Mathf.RoundToInt (f * 100) / 100;
-		}
+		}	
 		
 }
