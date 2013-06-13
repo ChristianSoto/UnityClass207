@@ -25,10 +25,16 @@ public class CarControl : MonoBehaviour {
 	public ParticleSystem LeftSmoke;
 	public ParticleSystem RightFlame;
 	public ParticleSystem RightSmoke;
+	public int BoosterPower = 120;
+	public AudioClip boosterA;
+	public AudioClip engine;
+	public AudioSource audio;
+	public int revEngine = 1;
+	public int BoostCounter = -128;
 	
 	void OnStart()
 	{		
-		//car.rigidbody.centerOfMass = new Vector3(0f, -1f, 0f);
+		Boost = false;
 	}
 	
 	void Update()
@@ -37,22 +43,26 @@ public class CarControl : MonoBehaviour {
 		Turn = Input.GetAxis ("Horizontal");
 		Speed = car.rigidbody.velocity.sqrMagnitude;	
 		
-		if (Input.GetButton ("Jump"))
+		if (Input.GetButton ("Jump") & BoostCounter > 1)
 		{
-			Acceleration = 1;			
+			//Acceleration = 1;			
 			LeftBooster.enabled = true;
 			RightBooster.enabled = true;
 			LeftFlame.Emit (1);			
 			RightFlame.Emit (1);	
 			LeftSmoke.Emit (1);
 			RightSmoke.Emit (1);
-			Boost = true;			
+			Boost = true;	
+			if (BoostCounter > 1)
+			{
+				BoostCounter --;
+			}
 		}
 		else
 		{
 			LeftBooster.enabled = false;
 			RightBooster.enabled = false;			
-			torque = 200;
+			torque = 600;
 			Boost = false;
 		}
 		
@@ -64,26 +74,55 @@ public class CarControl : MonoBehaviour {
 		
  
 	void FixedUpdate () {	
-			
+	
+	WayPointCollection wpc = GameObject.FindGameObjectWithTag("WayPointContainer").GetComponent ("WayPointCollection") as WayPointCollection;	
+	//Debug.Log (wpc.GetNearestWayPoint (car.position).Number);
+		
+	if (Acceleration == 1f)
+	{
+		if (revEngine < 100)				
+		{
+			revEngine++;	
+		}
+	}
+	else
+	{
+		if (revEngine > 1)				
+		{
+			revEngine--;	
+		}
+	}		
+		
 	rearWheel1.motorTorque = Acceleration * torque;
 	rearWheel2.motorTorque = Acceleration * torque;			
 	frontWheel1.steerAngle = Turn * 20;
 	frontWheel2.steerAngle = Turn * 20;
 	if (Boost)
-		{
-			car.transform.rigidbody.AddForce (-car.transform.forward * 12, ForceMode.Acceleration);
-		}
+	{
+		audio.pitch = 1f;
+		audio.clip = boosterA;
+		car.transform.rigidbody.AddForce (-car.transform.forward * BoosterPower, ForceMode.Acceleration);
+	}
+	else			
+	{
+		audio.pitch = 0.03f * float.Parse (revEngine.ToString()) + .75f;
+		audio.clip = engine;		
+	}
+		
+	if (!audio.isPlaying)
+	{		
+		audio.Play();
+	}
 	
 	if (Stuck())
-		{
-			stuckCount++;
-		}
-		else
-		{			
-			stuckCount = 0;
-		}
-		
-	
+	{
+		stuckCount++;
+	}
+	else
+	{			
+		stuckCount = 0;
+	}
+			
 		
 	if (stuckCount > 150)
 		{						

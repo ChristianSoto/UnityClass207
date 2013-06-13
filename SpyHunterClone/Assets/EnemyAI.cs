@@ -10,10 +10,30 @@ public class EnemyAI : MonoBehaviour {
 	public WheelCollider Wheel_LR;
 	public float torque;
 	public float Speed;
+	public bool Front = false;
+	public bool Far = true;
 	
 	// Use this for initialization
 	void Start () {
-	
+		int gl = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameStatePersistence>().gamelevel;
+		switch (gl)
+		{
+			case 1:
+			{
+				Acceleration = 20;
+				break;
+			}
+			case 2:
+			{
+				Acceleration = 30;
+				break;
+			}
+			case 3:
+			{
+				Acceleration = 40;
+				break;
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -33,10 +53,17 @@ public class EnemyAI : MonoBehaviour {
 			torque = 100;
 		}
 		
+//		if (!Front & Far )
+//		{
+//			torque = -torque;
+//		}
+		
 		Wheel_LR.motorTorque = Acceleration * torque * Time.deltaTime;
 		Wheel_RR.motorTorque = Acceleration * torque * Time.deltaTime;			
 		
 		Wheel_RF.steerAngle = Turn * 15;
 		Wheel_LF.steerAngle = Turn * 15;
+		
+		this.transform.rigidbody.AddForce (-this.transform.up * 2, ForceMode.VelocityChange);
 	}
 }

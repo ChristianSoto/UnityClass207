@@ -4,6 +4,7 @@ using System.Collections;
 public class UpdateStartPosition : MonoBehaviour {
 	
 	// Use this for initialization
+	public Transform M0;
 	public Transform M1;
 	public Transform M2;
 	public Transform M3;
@@ -22,7 +23,12 @@ public class UpdateStartPosition : MonoBehaviour {
 	{		
 		CarControl car = GameObject.FindGameObjectWithTag ("PlayerGameController").GetComponent ("CarControl") as CarControl;
 		switch(other.name)
-		{
+		{			
+			case "M0Line":
+				car.StartPosition = new Vector3(295f,100.5f,273f);
+				car.LookAtVector = M0;
+				break;
+			
 			case "M1Line":
 				car.StartPosition = this.transform.position;
 				car.LookAtVector = M1;
@@ -42,7 +48,8 @@ public class UpdateStartPosition : MonoBehaviour {
 			case "M4Line":
 				car.StartPosition = this.transform.position;
 				car.LookAtVector = M4;
-				break;
+				break;		
+			
 		}
 		
 		
